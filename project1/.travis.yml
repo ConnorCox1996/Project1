@@ -45,7 +45,7 @@ before_install:
 - sudo apt-get install -qq python-numpy python-scipy python-matplotlib
 
 script: 
-- coverage run --source=final_project/final_project.py setup.py test
+- coverage run --source=project1/project.py setup.py test
 - coverage report -m
 after_success: coveralls
 language: python
