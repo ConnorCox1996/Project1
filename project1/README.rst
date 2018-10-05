@@ -19,6 +19,10 @@ Project1
      :alt: Updates
 
 
+.. image:: https://coveralls.io/repos/github/ConnorCox1996/Project1/badge.svg?branch=master
+	:target: https://coveralls.io/github/ConnorCox1996/Project1?branch=master
+
+
 
 first project
 
