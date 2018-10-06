@@ -46,9 +46,6 @@ def num_steps(TotalTime, TimeStep):
         return number_steps
 number_Steps=num_steps(TotalTime,TimeStep)
 Number_Steps=int(number_Steps)
-#                                           CHECKER
-#print("NUMBERSTEPS")
-#print(Number_Steps)
 
 #Solve for Standard Deviation
 #finds Standard deviation, stored as "sigma", from temperature & gamma inputs 
@@ -94,7 +91,6 @@ def particle_motion(Number_Steps):
     acc=[InitialAcceleration]
     dist=rand_num_gen(0,sigma,Number_Steps)
     for i in range(1, Number_Steps, 1):
-       
         vadd=(vel[i-1]+(acc[i-1]*TimeStep))
         vel.append(vadd)
         padd=posi[i-1]+(vel[i-1]*(TimeStep))
@@ -106,61 +102,29 @@ def particle_motion(Number_Steps):
         elif posi[i] >= 5.0:
             break
     steps_taken_at_collision=(i*0.1)
-    
-   
-
-    
-    #                                   CHECKERS
-    #print(posi)
-    #print("Position at run")
-    #print("stepstaken")
-    #print(steps_taken_at_collision)
+  
     return steps_taken_at_collision, posi, vel
 
-
-test1=particle_motion(10)
-print("Final Position")
-print(test1[1][-1])
-print("Final Velocity")
-print(test1[2][-1])
-
-
-
-
-
-
-
 #multi-run simulator
+#runs the particle_motion function for a specified number of runs
+#used when generating a Histogram of the time required for particle to hit a wall
+#based on a number of runs
 def multi_run_simulator(runs):
     steps_at_collision_for_each_run=[]
     for j in range(runs):
         r=particle_motion(Number_Steps)
-        
-        #print(run_iteration)
-        #print("next")
         steps_at_collision_for_each_run.append(r[0])
-       
     return steps_at_collision_for_each_run
-    #print(steps_at_collision_for_each_run)
 
-    #TEST   
-test2=multi_run_simulator(100)
-
-#                                       CHECKERS
-# print("run result")    
-#print(test2)
-    
+multrun=multi_run_simulator(100)   
 
 def hist_generator(data):
     bins=[0,0.25,0.5,0.75,1,1.25,1.5,1.75,2.0]
     plt.hist(data, bins)
-    plt.xlabel('x')
-    plt.ylabel('y')
+    plt.xlabel('Time for particle to hit wall')
+    plt.ylabel('Number of runs (out of 100 runs total)')
+    plt.title("Histogram")
     plt.show()
-
-    #TEST
-test3=hist_generator(test2)
-
 
 def write_output(steps_taken_at_collision, posi, vel,TimeStep):
     
@@ -172,12 +136,22 @@ def write_output(steps_taken_at_collision, posi, vel,TimeStep):
     #except for the header, it writes index,time,position line by line
     
     for i in range(len(posi)):
-        Output.write('{}            {}            {:.2f}              {:.2f}'.format(i, (i*TimeStep), posi[i], vel[i]))
+        Output.write('{}            {:.2f}            {:.2f}              {:.2f}'.format(i, (i*TimeStep), posi[i], vel[i]))
         Output.write('\n')
     Output.close()
 
-
+#Store variables which are returned from the particle_motion function 
+#Call the write_output function, actually write the output
+#Call the hit_generator function, actaully generate the histogram
 steps_at_collision_for_each_run, posi, vel=particle_motion(Number_Steps)
 write_output(steps_at_collision_for_each_run,posi,vel,TimeStep)
+test3=hist_generator(multrun)
 
-
+#Use the list of positions and times returned by the particle_motion function,
+#Plot the trajectory of the particle, by plotting particle position vs time *Note: time is assumed to be in seconds, but this is not specified
+timelist=range(0,(len(posi)))
+plt.plot(timelist,posi)
+plt.xlabel("time")
+plt.ylabel("particle position")
+plt.title("Particle Trajectory")
+plt.show()
